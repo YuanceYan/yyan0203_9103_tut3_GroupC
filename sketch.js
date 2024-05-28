@@ -219,3 +219,53 @@ function draw() {
 
   drawCounter++; 
 }
+
+let allLinesDrawn = false;
+
+function draw() {
+  if (allLinesDrawn) {
+    return; 
+  }
+// Set background color
+  background(247, 241, 223); 
+// Calculate scale factor
+  let scaleFactor = min(width / referenceWidth, height / referenceHeight); 
+// Translate to the center of the window
+  translate(width / 2, height / 2); 
+  scale(scaleFactor); 
+// Translate to the top-left corner of the reference size
+  translate(-referenceWidth / 2, -referenceHeight / 2); 
+// Update hue based on frame count
+  let hue = (frameCount % 360); 
+
+  let remainingDraws = drawCounter;
+  blackLines.forEach(line => {
+    if (remainingDraws > 0) {
+      line.draw(hue);
+      remainingDraws--;
+    }
+  });
+
+  drawFunctions.forEach(drawFunc => {
+    if (remainingDraws > 0) {
+      remainingDraws = drawFunc.draw(hue, remainingDraws); 
+    }
+  });
+
+  drawCounter++; 
+
+  if (drawCounter >= totalLines) {
+    // Set flag when all lines are drawn
+    allLinesDrawn = true; 
+    drawCounter = 0; 
+    setTimeout(() => {
+      background(247, 241, 223); 
+      allLinesDrawn = false; 
+    }, 1000); 
+  }
+}
+
+function mousePressed() {
+    drawCounter = 0; 
+    allLinesDrawn = false; 
+  }
