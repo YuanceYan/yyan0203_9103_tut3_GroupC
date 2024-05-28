@@ -68,3 +68,29 @@ function draw() {
 // Draw each line
   blackLines.forEach(line => line.draw(hue)); 
 }
+
+class DrawFunction {
+    constructor(x, y, rotation, lines, config) {
+      this.x = x; 
+      this.y = y; 
+      // Rotation angle
+      this.rotation = rotation; 
+      // Number of lines
+      this.lines = lines; 
+      // Configuration function for drawing lines
+      this.config = config; 
+    }
+  
+    draw(hue) {
+      push();
+      // Translate to the position
+      translate(this.x, this.y); 
+      // Rotate the drawing context
+      rotate(this.rotation); 
+      for (let i = 0; i < this.lines; i++) {
+        // Apply the configuration function
+        this.config(i, hue); 
+      }
+      pop();
+    }
+  }
