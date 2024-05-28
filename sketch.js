@@ -33,16 +33,38 @@ function setup() {
   
     draw(hue) {
       push();
-      // Translate to the position
+    // Translate to the position
       translate(this.x, this.y);
-      // Rotate the line
+    // Rotate the line
       rotate(-28);
       noStroke(); 
-      // Fill color with hue
+    // Fill color with hue
       fill(hue, 100, 100); 
-      // Draw the rectangle
+    // Draw the rectangle
       rect(0, 0, this.w + this.adjustW, this.h); 
       pop();
     }
   }
   
+  let blackLines;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100);
+  angleMode(DEGREES);
+  
+// Instantiate BlackLine objects
+  blackLines = [
+    new BlackLine(280, 731, 190, 4, 4),
+    new BlackLine(338, 755, 960, 4, 4)
+  ];
+}
+
+function draw() {
+// Set background color
+  background(247, 241, 223);
+// Update hue based on frame count
+  let hue = (frameCount % 360);
+// Draw each line
+  blackLines.forEach(line => line.draw(hue)); 
+}
