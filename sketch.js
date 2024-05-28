@@ -155,3 +155,67 @@ function draw() {
 // Draw each draw function
   drawFunctions.forEach(drawFunc => drawFunc.draw(hue)); 
 }
+
+let drawCounter = 0;
+let totalLines = 0;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100);
+  angleMode(DEGREES);
+
+  // Instantiate BlackLine objects
+  blackLines = [
+    new BlackLine(280, 731, 190, 4, 4),
+    new BlackLine(338, 755, 960, 4, 4)
+  ];
+
+  // Instantiate DrawFunction objects
+  drawFunctions = [
+    new DrawFunction(68, 575, -28, 22, (i, hue) => {
+      noFill();
+      stroke(hue, 100, 100); 
+      let y = i * 6;
+      let x1 = 0 + i * 4.5;
+      let x2 = 480 - i * 3.7;
+      line(x1, y, x2, y); 
+    })
+  ];
+
+// Set stroke color with hue
+  totalLines = blackLines.length + drawFunctions.reduce((sum, df) => sum + df.lines, 0); 
+}
+
+function draw() {
+  if (drawCounter >= totalLines) {
+    return; 
+  }
+// Set background color
+  background(247, 241, 223); 
+// Calculate scale factor
+  let scaleFactor = min(width / referenceWidth, height / referenceHeight); 
+// Translate to the center of the window
+  translate(width / 2, height / 2); 
+// Apply scaling
+  scale(scaleFactor); 
+// Translate to the top-left corner of the reference size
+  translate(-referenceWidth / 2, -referenceHeight / 2); 
+
+  let hue = (frameCount % 360); 
+
+  let remainingDraws = drawCounter;
+  blackLines.forEach(line => {
+    if (remainingDraws > 0) {
+      line.draw(hue);
+      remainingDraws--;
+    }
+  });
+
+  drawFunctions.forEach(drawFunc => {
+    if (remainingDraws > 0) {
+      remainingDraws = drawFunc.draw(hue, remainingDraws); 
+    }
+  });
+
+  drawCounter++; 
+}
