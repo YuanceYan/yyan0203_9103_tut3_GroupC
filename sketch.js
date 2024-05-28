@@ -133,3 +133,25 @@ function draw() {
 // Draw each draw function
   drawFunctions.forEach(drawFunc => drawFunc.draw(hue)); 
 }
+
+let referenceWidth = 1280;
+let referenceHeight = 720;
+
+function draw() {
+// Set background color
+  background(247, 241, 223); 
+// Calculate scale factor
+  let scaleFactor = min(width / referenceWidth, height / referenceHeight); 
+// Translate to the center of the window
+  translate(width / 2, height / 2); 
+// Apply scaling
+  scale(scaleFactor); 
+// Translate to the top-left corner of the reference size
+  translate(-referenceWidth / 2, -referenceHeight / 2); 
+// Update hue based on frame count
+  let hue = (frameCount % 360); 
+// Draw each black line
+  blackLines.forEach(line => line.draw(hue)); 
+// Draw each draw function
+  drawFunctions.forEach(drawFunc => drawFunc.draw(hue)); 
+}
