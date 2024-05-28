@@ -94,3 +94,42 @@ class DrawFunction {
       pop();
     }
   }
+
+  let drawFunctions;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100);
+  angleMode(DEGREES);
+
+  // Instantiate BlackLine objects
+  blackLines = [
+    new BlackLine(280, 731, 190, 4, 4),
+    new BlackLine(338, 755, 960, 4, 4)
+  ];
+
+  // Instantiate DrawFunction objects
+  drawFunctions = [
+    new DrawFunction(68, 575, -28, 22, (i, hue) => {
+      noFill();
+      // Set stroke color with hue
+      stroke(hue, 100, 100); 
+      let y = i * 6;
+      let x1 = 0 + i * 4.5;
+      let x2 = 480 - i * 3.7;
+      // Draw the line
+      line(x1, y, x2, y); 
+    })
+  ];
+}
+
+function draw() {
+// Set background color
+  background(247, 241, 223); 
+// Update hue based on frame count  
+  let hue = (frameCount % 360); 
+// Draw each black line
+  blackLines.forEach(line => line.draw(hue)); 
+// Draw each draw function
+  drawFunctions.forEach(drawFunc => drawFunc.draw(hue)); 
+}
