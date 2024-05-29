@@ -169,3 +169,59 @@ function setup() {
   //Calculate the total number of lines to draw
   totalLines = blackLines.length + drawFunctions.reduce((sum, df) => sum + df.lines, 0);
 }
+
+//Define the draw function
+function draw() {
+  //Check if all lines are drawn
+  if (allLinesDrawn) {
+    return; 
+  }
+
+  //Set background color to light beige
+  colorMode(RGB);
+  background(247, 241, 223); 
+
+  //Scale and translate canvas to fit the window
+  let scaleFactor = min(width / referenceWidth, height / referenceHeight);
+  translate(width / 2, height / 2);
+  scale(scaleFactor);
+  translate(-referenceWidth / 2, -referenceHeight / 2);
+
+  colorMode(HSB, 360, 100, 100);
+  //Calculate hue based on frame count
+  let hue = (frameCount % 360); 
+
+  let remainingDraws = drawCounter; 
+
+  //Draw blacklines
+  blackLines.forEach(line => {
+    if (remainingDraws > 0) {
+      line.draw(hue); 
+      remainingDraws--; 
+    }
+  });
+
+  //Draw lines using draw functions
+  drawFunctions.forEach(drawFunc => {
+    if (remainingDraws > 0) {
+      remainingDraws = drawFunc.draw(hue, remainingDraws);
+    }
+  });
+
+  drawCounter++;
+
+  // Check if all lines are drawn
+  if (drawCounter >= totalLines) {
+    allLinesDrawn = true;
+    drawCounter = 0;      
+
+    // Clear the canvas after a brief pause
+    let clearCanvasTimeout = () => {
+      background(247, 241, 223); 
+      allLinesDrawn = false;    
+    };
+    
+    // Set a timeout to clear the canvas
+    setTimeout(clearCanvasTimeout, 1000); 
+  }
+}
