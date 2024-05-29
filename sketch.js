@@ -25,3 +25,34 @@ class BlackLine {
     pop();                      
   }
 }
+
+//Define the DrawFunction class to encapsulate drawing functions with specific configurations
+class DrawFunction {
+  constructor(x, y, rotation, lines, config) {
+    this.x = x;            
+    this.y = y;            
+    this.rotation = rotation; 
+    this.lines = lines;    
+    this.config = config;  
+  }
+
+  //Method to draw lines based on the configuration function
+  draw(hue, drawCount) {
+    //Save the current drawing style settings and transformations
+    push();                    
+    //Move the origin to the (x, y) position
+    translate(this.x, this.y);  
+    //Rotate the drawing context
+    rotate(this.rotation);      
+
+    //Draw the specified number of lines
+    for (let i = 0; i < this.lines && drawCount > 0; i++) {
+      //Call the configuration function to draw a line
+      this.config(i, hue); 
+      drawCount--;         
+    }
+
+    pop();                
+    return drawCount;  
+  }
+}
