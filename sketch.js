@@ -57,3 +57,11 @@ class DrawFunction {
 // Reference dimensions for scaling
 let referenceWidth = 1280;
 let referenceHeight = 720;
+
+// Setup function to initialize the canvas and settings
+function setup() {
+  // Create a window size canvas
+  createCanvas(windowWidth, windowHeight); 
+  colorMode(HSB, 360, 100, 100);  
+  angleMode(DEGREES);   
+}
