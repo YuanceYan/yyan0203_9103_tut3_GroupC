@@ -225,3 +225,14 @@ function draw() {
     setTimeout(clearCanvasTimeout, 1000); 
   }
 }
+
+//Define mousePressed function to reset the drawing on mouse press
+function mousePressed() {
+  drawCounter = 0;    
+  allLinesDrawn = false; 
+}
+
+//Resize the canvas to fit the window
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
