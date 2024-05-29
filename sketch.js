@@ -1,79 +1,69 @@
-//Define the BlackLine class to represent black lines with adjustable parameters
+// Class representing a blackline
 class BlackLine {
   constructor(x, y, w, h, adjustW) {
-    this.x = x;       
-    this.y = y;        
-    this.w = w;        
-    this.h = h;  
-    //Adjustment for width      
+    //x coordinate
+    this.x = x; 
+    //y coordinate
+    this.y = y; 
+    //width of blackline
+    this.w = w; 
+    //height of blackline
+    this.h = h; 
+    //adjustment to width
     this.adjustW = adjustW; 
   }
 
-  //Method to draw the black line
+  //Draw the black line
   draw(hue) {
-    //Save the current drawing style settings and transformations
-    push();      
-    //Move the origin to the (x, y) position               
-    translate(this.x, this.y);  
-    //Rotate the drawing context
-    rotate(-28);                
-    noStroke();       
-    //Set the fill color based on hue          
-    fill(hue, 100, 100);    
-    //Draw a rectangle representing the line    
+    push(); 
+    translate(this.x, this.y); 
+    rotate(-28); 
+    noStroke();
+    fill(hue, 100, 100, map(sin(frameCount * 2), -1, 1, 50, 100)); 
     rect(0, 0, this.w + this.adjustW, this.h); 
-    pop();                      
+    pop(); 
   }
 }
 
-//Define the DrawFunction class to encapsulate drawing functions with specific configurations
+//Class representing a drawing function
 class DrawFunction {
   constructor(x, y, rotation, lines, config) {
-    this.x = x;            
-    this.y = y;            
+    this.x = x; 
+    this.y = y; 
     this.rotation = rotation; 
-    this.lines = lines;    
-    this.config = config;  
+    this.lines = lines; 
+    this.config = config; 
   }
 
-  //Method to draw lines based on the configuration function
+  //Method to draw the configured lines
   draw(hue, drawCount) {
-    //Save the current drawing style settings and transformations
-    push();                    
-    //Move the origin to the (x, y) position
-    translate(this.x, this.y);  
-    //Rotate the drawing context
-    rotate(this.rotation);      
-
-    //Draw the specified number of lines
+    push();
+    translate(this.x, this.y); 
+    rotate(this.rotation + sin(frameCount * 0.5) * 5); 
     for (let i = 0; i < this.lines && drawCount > 0; i++) {
-      //Call the configuration function to draw a line
       this.config(i, hue); 
-      drawCount--;         
+      drawCount--; 
     }
-
-    pop();                
-    return drawCount;  
+    pop(); 
+    return drawCount; 
   }
 }
 
-//Define variables and setup the canvas
 let referenceWidth = 1280; 
 let referenceHeight = 720; 
-let drawCounter = 0;       
-let totalLines = 0;        
+let drawCounter = 0; 
+let totalLines = 0; 
 let allLinesDrawn = false; 
-let blackLines;            
-let drawFunctions;        
+let blackLines; 
+let drawFunctions; 
 
-//Setup canvas
+//Setup function
 function setup() {
-  //Create a canvas with window size
   createCanvas(windowWidth, windowHeight); 
-  colorMode(HSB, 360, 100, 100); 
-  angleMode(DEGREES);            
+  colorMode(HSB, 360, 100, 100, 100); 
+  angleMode(DEGREES); 
 
-  //Initialize instances of BlackLine
+  //Initialize blackline
   blackLines = [
     new BlackLine(280, 731, 190, 4, 4),
     new BlackLine(338, 755, 960, 4, 4),
@@ -86,83 +76,104 @@ function setup() {
     new BlackLine(460, 610, 17, 8, -12)
   ];
 
-  //Initialize instances of DrawFunction
+  //Initialize draw function
   drawFunctions = [
     new DrawFunction(68, 575, -28, 22, (i, hue) => {
       noFill();
-      stroke(hue, 100, 100);
-      let y = i * 6;
+      let gradientColor = color(hue, 100, map(i, 0, 22, 50, 100)); 
+      stroke(gradientColor); 
+      strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
+      let y = i * 6 + sin(frameCount * 0.1 + i) * 5; 
       let x1 = 0 + i * 4.5;
       let x2 = 480 - i * 3.7;
       line(x1, y, x2, y);
     }),
     new DrawFunction(843, 154, -28, 57, (i, hue) => {
       if (i >= 20 && i < 33) {
-        noStroke();
+        noStroke(); 
       } else {
-        noFill();
-        stroke(hue, 100, 100);
+        noFill(); 
+        let gradientColor = color(hue, 100, map(i, 0, 57, 50, 100)); 
+        stroke(gradientColor); 
+        strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
       }
-      let y = i * 6;
+      let y = i * 6 + sin(frameCount * 0.1 + i) * 5; 
       let x1 = 0 - i * 4;
       let x2 = 69 + i * 3.3;
-      line(x1, y, x2, y);
+      line(x1, y, x2, y); 
       if (i == 7 || i == 13) {
         noStroke();
-        fill(hue, 100, 100);
+        fill(hue, 100, 100, map(sin(frameCount * 2), -1, 1, 50, 100)); 
         if (i == 7) {
-          rect(x1, y, 80, 10);
+          rect(x1, y, 80, 10); 
           rect(x2, y, 260, 10);
         } else if (i == 13) {
-          rect(x1, y, 124, 8);
+          rect(x1, y, 124, 8); 
           rect(x2, y, 260, 10);
         }
       } else if (i == 17) {
         noStroke();
-        fill(hue, 100, 100);
-        rect(x1, y, 154, 6);
+        //Fading color
+        fill(hue, 100, 100, map(sin(frameCount * 2), -1, 1, 50, 100)); 
+        rect(x1, y, 154, 6); 
       }
     }),
     new DrawFunction(153, 530, -28, 54, (i, hue) => {
-      noFill();
-      stroke(hue, 100, 100);
-      let y = i * 6;
+      noFill(); 
+      //Gradient color
+      let gradientColor = color(hue, 100, map(i, 0, 54, 50, 100)); 
+      stroke(gradientColor); 
+      //Pulsating line width
+      strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
+      let y = i * 6 + sin(frameCount * 0.1 + i) * 5; 
       let x1 = 0 + i * 4;
       let x2 = x1 + 50;
-      line(x1, y, x2, y);
+      line(x1, y, x2, y); 
     }),
     new DrawFunction(238, 712, -28, 20, (i, hue) => {
       if (i >= 10 && i < 14) {
         noStroke();
       } else {
-        noFill();
-        stroke(hue, 100, 100);
+        noFill(); 
+        //Gradient color
+        let gradientColor = color(hue, 100, map(i, 0, 20, 50, 100)); 
+        stroke(gradientColor); 
+        //Pulsating line width
+        strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
       }
-      let y = i * 6;
+      let y = i * 6 + sin(frameCount * 0.1 + i) * 5; 
       let x1 = 0 + i * 5;
       let x2 = x1 + 1280;
-      line(x1, y, x2, y);
+      line(x1, y, x2, y); 
     }),
     new DrawFunction(144, 609, -28, 2, (i, hue) => {
-      noFill();
-      stroke(hue, 100, 100);
-      let y = i * 24;
+      noFill(); 
+      let gradientColor = color(hue, 100, 100); 
+      stroke(gradientColor); 
+      //Pulsating line width
+      strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
+      let y = i * 24 + sin(frameCount * 0.1 + i) * 10; 
       let x1 = 0 + i * 16;
       let x2 = x1 + 1200;
-      line(x1, y, x2, y);
+      line(x1, y, x2, y); 
     }),
     new DrawFunction(94, 651, -28, 9, (i, hue) => {
-      noFill();
-      stroke(hue, 100, 100);
-      let y = i * 6;
+      noFill(); 
+      //Gradient color
+      let gradientColor = color(hue, 100, map(i, 0, 9, 50, 100)); 
+      stroke(gradientColor); 
+      //Pulsating line width
+      strokeWeight(map(sin(frameCount * 0.5), -1, 1, 1, 4)); 
+      let y = i * 6 + sin(frameCount * 0.1 + i) * 5; 
       let x1 = 0 + i * 5;
       let x2 = 440 - i * 3;
-      line(x1, y, x2, y);
+      line(x1, y, x2, y); 
     }),
     new DrawFunction(812, 423, -28, 1, (i, hue) => {
-      noStroke();
-      fill(hue, 100, 100);
-      rect(0, 0, 311, 5);
+      noStroke(); 
+      //Fading color
+      fill(hue, 100, 100, map(sin(frameCount * 2), -1, 1, 50, 100)); 
+      rect(0, 0, 311, 5); 
     })
   ];
 
@@ -170,30 +181,23 @@ function setup() {
   totalLines = blackLines.length + drawFunctions.reduce((sum, df) => sum + df.lines, 0);
 }
 
-//Define the draw function
 function draw() {
-  //Check if all lines are drawn
   if (allLinesDrawn) {
     return; 
   }
 
-  //Set background color to light beige
-  colorMode(RGB);
-  background(247, 241, 223); 
+  //Dynamic background color
+  let bgHue = (frameCount * 0.1) % 360;
+  background(bgHue, 50, 100);
+  //Calculate scaling factor
+  let scaleFactor = min(width / referenceWidth, height / referenceHeight); 
+  translate(width / 2, height / 2); 
+  scale(scaleFactor); 
+  translate(-referenceWidth / 2, -referenceHeight / 2); 
 
-  //Scale and translate canvas to fit the window
-  let scaleFactor = min(width / referenceWidth, height / referenceHeight);
-  translate(width / 2, height / 2);
-  scale(scaleFactor);
-  translate(-referenceWidth / 2, -referenceHeight / 2);
-
-  colorMode(HSB, 360, 100, 100);
-  //Calculate hue based on frame count
   let hue = (frameCount % 360); 
 
   let remainingDraws = drawCounter; 
-
-  //Draw blacklines
   blackLines.forEach(line => {
     if (remainingDraws > 0) {
       line.draw(hue); 
@@ -201,38 +205,30 @@ function draw() {
     }
   });
 
-  //Draw lines using draw functions
   drawFunctions.forEach(drawFunc => {
     if (remainingDraws > 0) {
-      remainingDraws = drawFunc.draw(hue, remainingDraws);
+      remainingDraws = drawFunc.draw(hue, remainingDraws); 
     }
   });
 
-  drawCounter++;
+  drawCounter++; 
 
-  // Check if all lines are drawn
   if (drawCounter >= totalLines) {
-    allLinesDrawn = true;
-    drawCounter = 0;      
-
-    // Clear the canvas after a brief pause
-    let clearCanvasTimeout = () => {
+    allLinesDrawn = true; 
+    drawCounter = 0; 
+    setTimeout(() => {
       background(247, 241, 223); 
-      allLinesDrawn = false;    
-    };
-    
-    // Set a timeout to clear the canvas
-    setTimeout(clearCanvasTimeout, 1000); 
+      allLinesDrawn = false; 
+    }, 1000); 
   }
 }
 
-//Define mousePressed function to reset the drawing on mouse press
 function mousePressed() {
-  drawCounter = 0;    
+  drawCounter = 0; 
   allLinesDrawn = false; 
 }
 
-//Resize the canvas to fit the window
+// Resize canvas to fit window
 function windowResized() {
-  resizeCanvas(windowWidth, windowHeight);
+  resizeCanvas(windowWidth, windowHeight); 
 }
